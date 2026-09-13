@@ -73,3 +73,19 @@ class VerifyRepoTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class InputAndGameModeContractTests(unittest.TestCase):
+    def test_player_controller_uses_enhanced_input(self):
+        source = (ROOT / "Source/OpenDriveCity/Private/OpenDrivePlayerController.cpp").read_text(encoding="utf-8")
+        for token in [
+            "UInputMappingContext", "UInputAction", "UEnhancedInputLocalPlayerSubsystem",
+            "EKeys::W", "EKeys::S", "EKeys::A", "EKeys::D",
+            "EKeys::SpaceBar", "EKeys::Gamepad_LeftX"
+        ]:
+            self.assertIn(token, source)
+
+    def test_game_mode_owns_project_classes(self):
+        source = (ROOT / "Source/OpenDriveCity/Private/OpenDriveGameMode.cpp").read_text(encoding="utf-8")
+        self.assertIn("PlayerControllerClass = AOpenDrivePlayerController::StaticClass()", source)
+        self.assertIn("DefaultPawnClass = AOpenDriveVehiclePawn::StaticClass()", source)
