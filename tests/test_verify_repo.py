@@ -89,3 +89,24 @@ class InputAndGameModeContractTests(unittest.TestCase):
         source = (ROOT / "Source/OpenDriveCity/Private/OpenDriveGameMode.cpp").read_text(encoding="utf-8")
         self.assertIn("PlayerControllerClass = AOpenDrivePlayerController::StaticClass()", source)
         self.assertIn("DefaultPawnClass = AOpenDriveVehiclePawn::StaticClass()", source)
+
+
+class CityAndRenderingContractTests(unittest.TestCase):
+    def test_city_builder_is_bounded_and_asset_free(self):
+        header = (ROOT / "Source/OpenDriveCity/Public/OpenDriveTestCityBuilder.h").read_text(encoding="utf-8")
+        source = (ROOT / "Source/OpenDriveCity/Private/OpenDriveTestCityBuilder.cpp").read_text(encoding="utf-8")
+        for token in ["GridX", "GridY", "BlockSize", "RoadWidth", "MaxBuildings"]:
+            self.assertIn(token, header)
+        self.assertGreaterEqual(source.count("FMath::Clamp"), 3)
+        self.assertIn("/Engine/BasicShapes/Cube.Cube", source)
+        self.assertIn("/Engine/BasicShapes/Plane.Plane", source)
+        self.assertIn("400", source)
+
+    def test_rendering_config_has_scalable_lumen_nanite_defaults(self):
+        engine = (ROOT / "Config/DefaultEngine.ini").read_text(encoding="utf-8")
+        scalability = (ROOT / "Config/DefaultScalability.ini").read_text(encoding="utf-8")
+        for token in ["r.DynamicGlobalIlluminationMethod=1", "r.ReflectionMethod=1", "r.Nanite.ProjectEnabled=True"]:
+            self.assertIn(token, engine)
+        for token in ["@0]", "@1]", "@2]", "@Cine]", "r.DynamicGlobalIlluminationMethod=0"]:
+            self.assertIn(token, scalability)
+        self.assertIn("EnhancedInputComponent", engine)
