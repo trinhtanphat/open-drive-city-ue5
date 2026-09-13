@@ -6,17 +6,45 @@ import sys
 
 REQUIRED_PATHS = [
     "OpenDriveCity.uproject",
-    "Source/OpenDriveCity/OpenDriveCity.Build.cs",
-    "Source/OpenDriveCity/OpenDriveCity.cpp",
-    "Source/OpenDriveCity.Target.cs",
-    "Source/OpenDriveCityEditor.Target.cs",
     ".gitignore",
     "LICENSE",
     "README.md",
+    ".github/workflows/verify.yml",
+    "Config/DefaultEngine.ini",
+    "Config/DefaultGame.ini",
+    "Config/DefaultScalability.ini",
+    "Source/OpenDriveCity.Target.cs",
+    "Source/OpenDriveCityEditor.Target.cs",
+    "Source/OpenDriveCity/OpenDriveCity.Build.cs",
+    "Source/OpenDriveCity/OpenDriveCity.cpp",
+    "Source/OpenDriveCity/Public/OpenDriveDriverIntent.h",
+    "Source/OpenDriveCity/Public/OpenDriveVehicleControllerComponent.h",
+    "Source/OpenDriveCity/Private/OpenDriveVehicleControllerComponent.cpp",
+    "Source/OpenDriveCity/Public/OpenDriveVehiclePawn.h",
+    "Source/OpenDriveCity/Private/OpenDriveVehiclePawn.cpp",
+    "Source/OpenDriveCity/Public/OpenDrivePlayerController.h",
+    "Source/OpenDriveCity/Private/OpenDrivePlayerController.cpp",
+    "Source/OpenDriveCity/Public/OpenDriveGameMode.h",
+    "Source/OpenDriveCity/Private/OpenDriveGameMode.cpp",
+    "Source/OpenDriveCity/Public/OpenDriveTestCityBuilder.h",
+    "Source/OpenDriveCity/Private/OpenDriveTestCityBuilder.cpp",
+    "tools/verify_repo.py",
+    "tests/test_verify_repo.py",
+    "tests/test_final_contract.py",
+    "tests/test_input_lifecycle.py",
 ]
-FORBIDDEN_DIRS = ["Binaries", "DerivedDataCache", "Intermediate", "Saved"]
+
+FORBIDDEN_DIRS = {"Binaries", "DerivedDataCache", "Intermediate", "Saved"}
 FORBIDDEN_BINARY_EXTENSIONS = {".uasset", ".umap", ".pak"}
 REQUIRED_PLUGINS = {"ChaosVehicles", "EnhancedInput"}
+
+
+def _relative_parts(root: pathlib.Path, path: pathlib.Path) -> tuple[str, ...]:
+    return path.relative_to(root).parts
+
+
+def _is_ignored_internal_path(parts: tuple[str, ...]) -> bool:
+    return ".git" in parts or ".worktrees" in parts
 
 
 def verify(root: pathlib.Path) -> list[str]:
@@ -25,10 +53,6 @@ def verify(root: pathlib.Path) -> list[str]:
     for rel in REQUIRED_PATHS:
         if not (root / rel).exists():
             errors.append(f"missing required path: {rel}")
-
-    for name in FORBIDDEN_DIRS:
-        if (root / name).exists():
-            errors.append(f"forbidden generated directory: {name}")
 
     descriptor_path = root / "OpenDriveCity.uproject"
     if descriptor_path.exists():
@@ -46,16 +70,18 @@ def verify(root: pathlib.Path) -> list[str]:
                 errors.append(f"required plugin not enabled: {plugin}")
 
     for path in root.rglob("*"):
-        if not path.is_file():
+        parts = _relative_parts(root, path)
+        if _is_ignored_internal_path(parts):
             continue
-        if ".git" in path.parts or ".worktrees" in path.parts:
+        if path.is_dir() and path.name in FORBIDDEN_DIRS:
+            rel = path.relative_to(root).as_posix()
+            errors.append(f"forbidden generated directory: {rel}")
             continue
-        if path.suffix.lower() in FORBIDDEN_BINARY_EXTENSIONS:
+        if path.is_file() and path.suffix.lower() in FORBIDDEN_BINARY_EXTENSIONS:
             rel = path.relative_to(root).as_posix()
             errors.append(f"forbidden phase-1 binary asset: {rel}")
 
     return errors
-
 
 def main() -> int:
     root = pathlib.Path(__file__).resolve().parents[1]

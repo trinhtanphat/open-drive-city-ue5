@@ -3,7 +3,7 @@ import pathlib
 import tempfile
 import unittest
 
-from tools.verify_repo import verify
+from tools.verify_repo import REQUIRED_PATHS, verify
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 
@@ -12,15 +12,8 @@ class VerifyRepoTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.fixture_root = pathlib.Path(self.temp.name)
-        required = [
-            "Source/OpenDriveCity/OpenDriveCity.Build.cs",
-            "Source/OpenDriveCity/OpenDriveCity.cpp",
-            "Source/OpenDriveCity.Target.cs",
-            "Source/OpenDriveCityEditor.Target.cs",
-            ".gitignore",
-            "LICENSE",
-            "README.md",
-        ]
+        required = [rel for rel in REQUIRED_PATHS if rel != "OpenDriveCity.uproject"]
+
         for rel in required:
             path = self.fixture_root / rel
             path.parent.mkdir(parents=True, exist_ok=True)
