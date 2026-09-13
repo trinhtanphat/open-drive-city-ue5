@@ -46,6 +46,11 @@ class VerifyRepoTests(unittest.TestCase):
         (self.fixture_root / "Binaries").mkdir()
         self.assertIn("forbidden generated directory: Binaries", verify(self.fixture_root))
 
+    def test_gitignore_excludes_python_cache(self):
+        text = (ROOT / ".gitignore").read_text(encoding="utf-8")
+        self.assertIn("__pycache__/", text)
+        self.assertIn("*.py[cod]", text)
+
 
 if __name__ == "__main__":
     unittest.main()

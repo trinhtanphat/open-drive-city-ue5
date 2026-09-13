@@ -3,6 +3,8 @@ Binaries/
 DerivedDataCache/
 Intermediate/
 Saved/
+__pycache__/
+*.py[cod]
 .vs/
 .idea/
 *.sln
