@@ -32,9 +32,7 @@ class VerifyRepoTests(unittest.TestCase):
                 {"Name": "EnhancedInput", "Enabled": True},
             ],
         }
-        (self.fixture_root / "OpenDriveCity.uproject").write_text(
-            json.dumps(descriptor), encoding="utf-8"
-        )
+        (self.fixture_root / "OpenDriveCity.uproject").write_text(json.dumps(descriptor), encoding="utf-8")
 
     def tearDown(self):
         self.temp.cleanup()
@@ -63,6 +61,14 @@ class VerifyRepoTests(unittest.TestCase):
             self.assertIn(token, header)
         self.assertGreaterEqual(source.count("FMath::Clamp"), 3)
         self.assertNotIn("EKeys::", source)
+
+    def test_vehicle_pawn_contract(self):
+        header = (ROOT / "Source/OpenDriveCity/Public/OpenDriveVehiclePawn.h").read_text(encoding="utf-8")
+        source = (ROOT / "Source/OpenDriveCity/Private/OpenDriveVehiclePawn.cpp").read_text(encoding="utf-8")
+        for token in ["AWheeledVehiclePawn", "ResetChaseCamera", "GetSpeedKph", "GetCurrentGear", "GetDriverController"]:
+            self.assertIn(token, header)
+        for token in ["SetThrottleInput", "SetBrakeInput", "SetSteeringInput", "SetHandbrakeInput", "USpringArmComponent", "UCameraComponent"]:
+            self.assertIn(token, source)
 
 
 if __name__ == "__main__":
