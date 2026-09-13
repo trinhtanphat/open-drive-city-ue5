@@ -22,6 +22,7 @@ protected:
 
 private:
     void BuildRuntimeInputMap();
+    void RegisterRuntimeInputMap();
     void ApplyThrottle(const FInputActionValue& Value);
     void ApplyBrake(const FInputActionValue& Value);
     void ApplySteering(const FInputActionValue& Value);

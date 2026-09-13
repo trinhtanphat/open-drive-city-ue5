@@ -21,10 +21,16 @@ void AOpenDrivePlayerController::BeginPlay()
 {
     Super::BeginPlay();
     BuildRuntimeInputMap();
+    RegisterRuntimeInputMap();
 }
 
 void AOpenDrivePlayerController::BuildRuntimeInputMap()
 {
+    if (RuntimeContext)
+    {
+        return;
+    }
+
     RuntimeContext = NewObject<UInputMappingContext>(this, TEXT("OpenDriveRuntimeContext"));
     auto NewAxisAction = [this](const TCHAR* Name)
     {
@@ -65,6 +71,15 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
     RuntimeContext->MapKey(ResetCameraAction, EKeys::R);
     RuntimeContext->MapKey(ResetCameraAction, EKeys::Gamepad_RightThumbstick);
 
+}
+
+void AOpenDrivePlayerController::RegisterRuntimeInputMap()
+{
+    if (!RuntimeContext)
+    {
+        BuildRuntimeInputMap();
+    }
+
     if (ULocalPlayer* LocalPlayer = GetLocalPlayer())
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem =
@@ -78,6 +93,7 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
 void AOpenDrivePlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
+    BuildRuntimeInputMap();
 
     UEnhancedInputComponent* Enhanced = Cast<UEnhancedInputComponent>(InputComponent);
     if (!Enhanced)
