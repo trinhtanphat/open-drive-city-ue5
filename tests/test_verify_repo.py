@@ -51,6 +51,19 @@ class VerifyRepoTests(unittest.TestCase):
         self.assertIn("__pycache__/", text)
         self.assertIn("*.py[cod]", text)
 
+    def test_driver_intent_contract(self):
+        text = (ROOT / "Source/OpenDriveCity/Public/OpenDriveDriverIntent.h").read_text(encoding="utf-8")
+        for token in ["FOpenDriveDriverIntent", "Throttle", "Brake", "Steering", "bHandbrake"]:
+            self.assertIn(token, text)
+
+    def test_vehicle_controller_component_contract(self):
+        header = (ROOT / "Source/OpenDriveCity/Public/OpenDriveVehicleControllerComponent.h").read_text(encoding="utf-8")
+        source = (ROOT / "Source/OpenDriveCity/Private/OpenDriveVehicleControllerComponent.cpp").read_text(encoding="utf-8")
+        for token in ["SetThrottle", "SetBrake", "SetSteering", "SetHandbrake", "GetIntent"]:
+            self.assertIn(token, header)
+        self.assertGreaterEqual(source.count("FMath::Clamp"), 3)
+        self.assertNotIn("EKeys::", source)
+
 
 if __name__ == "__main__":
     unittest.main()
