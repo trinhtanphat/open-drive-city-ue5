@@ -1,2 +1,16 @@
 .worktrees/
-
+Binaries/
+DerivedDataCache/
+Intermediate/
+Saved/
+.vs/
+.idea/
+*.sln
+*.VC.db
+*.opensdf
+*.sdf
+*.suo
+*.user
+*.uasset
+*.umap
+*.pak
