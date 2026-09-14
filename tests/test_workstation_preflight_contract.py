@@ -29,3 +29,18 @@ class WorkstationPreflightContractTests(unittest.TestCase):
             "exit 2",
         ]:
             self.assertIn(token, text)
+
+    def test_preflight_files_are_required(self):
+        required = set(REQUIRED_PATHS)
+        self.assertIn("tools/check_workstation.ps1", required)
+        self.assertIn("tests/test_workstation_preflight_contract.py", required)
+
+    def test_skip_gpu_mode_is_documented(self):
+        text = (ROOT / "tools" / "check_workstation.ps1").read_text(encoding="utf-8")
+        self.assertIn("SkipGpu", text)
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("tools/check_workstation.ps1 -SkipGpu", readme)
+
+
+if __name__ == "__main__":
+    unittest.main()
