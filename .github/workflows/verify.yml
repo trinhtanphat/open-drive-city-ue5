@@ -16,3 +16,43 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Repository verifier
         run: python tools/verify_repo.py
+
+  windows-powershell-verify:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse PowerShell helpers
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $scripts = @(
+            'tools/check_workstation.ps1',
+            'tools/build_unreal.ps1',
+            'tools/run_unreal_smoke.ps1'
+          )
+          foreach ($script in $scripts) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile(
+              (Resolve-Path $script).Path,
+              [ref]$tokens,
+              [ref]$errors
+            ) | Out-Null
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error $_.Message }
+              throw "PowerShell parse failed: $script"
+            }
+          }
+      - name: Verify Unreal helpers fail closed without engine
+        shell: pwsh
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $false
+          $missing = Join-Path $env:RUNNER_TEMP 'missing-unreal-engine'
+          & pwsh -NoProfile -File .\tools\build_unreal.ps1 -UnrealRoot $missing
+          if ($LASTEXITCODE -ne 2) {
+            throw "build_unreal.ps1 expected exit 2, got $LASTEXITCODE"
+          }
+          & pwsh -NoProfile -File .\tools\run_unreal_smoke.ps1 -UnrealRoot $missing
+          if ($LASTEXITCODE -ne 2) {
+            throw "run_unreal_smoke.ps1 expected exit 2, got $LASTEXITCODE"
+          }

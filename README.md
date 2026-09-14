@@ -83,6 +83,8 @@ git diff --check
 
 GitHub Actions runs the Python unit suite and repository verifier on pushes and pull requests without requiring Unreal Engine.
 
+A separate `windows-latest` job parses the PowerShell helpers with the real PowerShell parser and verifies that the Unreal build/smoke helpers fail closed with exit 2 when the engine is missing.
+
 ## Licensing
 
 Project-owned code and documentation are provided under the **MIT License** in `LICENSE`. Unreal Engine, Epic content, Fab/Marketplace assets, Megascans content, and any future third-party assets remain governed by their own applicable licenses and are not redistributed here unless their license explicitly permits it.

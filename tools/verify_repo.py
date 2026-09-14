@@ -40,6 +40,7 @@ REQUIRED_PATHS = [
     "tools/build_unreal.ps1",
     "tools/run_unreal_smoke.ps1",
     "tests/test_unreal_build_smoke_scripts.py",
+    "tests/test_windows_powershell_ci.py",
 ]
 
 FORBIDDEN_DIRS = {"Binaries", "DerivedDataCache", "Intermediate", "Saved"}
