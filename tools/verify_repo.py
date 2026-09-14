@@ -32,6 +32,8 @@ REQUIRED_PATHS = [
     "tests/test_verify_repo.py",
     "tests/test_final_contract.py",
     "tests/test_input_lifecycle.py",
+    "tools/check_workstation.ps1",
+    "tests/test_workstation_preflight_contract.py",
 ]
 
 FORBIDDEN_DIRS = {"Binaries", "DerivedDataCache", "Intermediate", "Saved"}

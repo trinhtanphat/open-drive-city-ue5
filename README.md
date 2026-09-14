@@ -82,3 +82,19 @@ GitHub Actions runs the Python unit suite and repository verifier on pushes and 
 ## Licensing
 
 Project-owned code and documentation are provided under the **MIT License** in `LICENSE`. Unreal Engine, Epic content, Fab/Marketplace assets, Megascans content, and any future third-party assets remain governed by their own applicable licenses and are not redistributed here unless their license explicitly permits it.
+
+## Workstation preflight
+
+Before attempting an Unreal build, run the workstation gate:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/check_workstation.ps1
+```
+
+On a CPU-only or virtualized host such as VPS 182, temporarily skip the GPU requirement while still checking the compiler, SDK, build tools, Unreal installation, and disk:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/check_workstation.ps1 -SkipGpu
+```
+
+Exit code `0` means every required non-skipped prerequisite passed. Exit code `2` means one or more blockers remain. Skipping GPU never changes the runtime status: it remains **GPU-runtime-unverified** until a discrete-GPU smoke test is completed.
