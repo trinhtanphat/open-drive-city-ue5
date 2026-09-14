@@ -102,3 +102,21 @@ powershell -ExecutionPolicy Bypass -File tools/check_workstation.ps1 -SkipGpu
 ```
 
 Exit code `0` means every required non-skipped prerequisite passed. Exit code `2` means one or more blockers remain. Skipping GPU never changes the runtime status: it remains **GPU-runtime-unverified** until a discrete-GPU smoke test is completed.
+
+## Unreal build and headless smoke
+
+After Unreal Engine 5.6 is installed, build the editor target from PowerShell. You may omit `-UnrealRoot` to auto-detect `UE_5.6` from the standard Epic install folders:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/build_unreal.ps1 -UnrealRoot "C:\Program Files\Epic Games\UE_5.6"
+```
+
+The build helper invokes `Build.bat` for `OpenDriveCityEditor Win64 Development` and fails closed when the engine, project, or build entry point is missing.
+
+After a successful build, run the CPU/headless startup smoke test:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/run_unreal_smoke.ps1 -UnrealRoot "C:\Program Files\Epic Games\UE_5.6"
+```
+
+The smoke helper launches `UnrealEditor-Cmd.exe` with `-NullRHI`, `-Unattended`, no splash/audio, and a bounded timeout. Passing this proves project/module startup without a GPU; it does **not** replace the later discrete-GPU driving/render validation.
