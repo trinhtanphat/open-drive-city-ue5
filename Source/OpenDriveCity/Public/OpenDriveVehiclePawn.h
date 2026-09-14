@@ -28,6 +28,9 @@ public:
     UFUNCTION(BlueprintCallable, Category="OpenDrive|Camera")
     void AdjustCameraPitch(float DeltaDegrees);
 
+    UFUNCTION(BlueprintCallable, Category="OpenDrive|Camera")
+    void AdjustCameraZoom(float DeltaUnits);
+
     UFUNCTION(BlueprintCallable, Category="OpenDrive|Vehicle")
     void RecoverVehicle();
 

@@ -47,6 +47,7 @@ void AOpenDriveVehiclePawn::ResetChaseCamera()
     if (CameraBoom)
     {
         CameraBoom->SetRelativeRotation(FRotator(-10.0f, 0.0f, 0.0f));
+        CameraBoom->TargetArmLength = 650.0f;
     }
 }
 
@@ -72,6 +73,17 @@ void AOpenDriveVehiclePawn::AdjustCameraPitch(float DeltaDegrees)
     FRotator Rotation = CameraBoom->GetRelativeRotation();
     Rotation.Pitch = FMath::Clamp(Rotation.Pitch + DeltaDegrees, -70.0f, 25.0f);
     CameraBoom->SetRelativeRotation(Rotation);
+}
+
+void AOpenDriveVehiclePawn::AdjustCameraZoom(float DeltaUnits)
+{
+    if (!CameraBoom)
+    {
+        return;
+    }
+
+    CameraBoom->TargetArmLength = FMath::Clamp(
+        CameraBoom->TargetArmLength - DeltaUnits, 350.0f, 900.0f);
 }
 
 void AOpenDriveVehiclePawn::RecoverVehicle()

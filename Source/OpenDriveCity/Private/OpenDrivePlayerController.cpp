@@ -56,6 +56,7 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
     MouseLookPitchAction = NewAxisAction(TEXT("MouseLookPitch"));
     GamepadLookYawAction = NewAxisAction(TEXT("GamepadLookYaw"));
     GamepadLookPitchAction = NewAxisAction(TEXT("GamepadLookPitch"));
+    CameraZoomAction = NewAxisAction(TEXT("CameraZoom"));
 
     RuntimeContext->MapKey(ThrottleAction, EKeys::W);
     RuntimeContext->MapKey(ThrottleAction, EKeys::Up);
@@ -83,6 +84,10 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
     RuntimeContext->MapKey(MouseLookPitchAction, EKeys::MouseY);
     RuntimeContext->MapKey(GamepadLookYawAction, EKeys::Gamepad_RightX);
     RuntimeContext->MapKey(GamepadLookPitchAction, EKeys::Gamepad_RightY);
+    RuntimeContext->MapKey(CameraZoomAction, EKeys::MouseWheelAxis);
+    FEnhancedActionKeyMapping& ZoomOut = RuntimeContext->MapKey(CameraZoomAction, EKeys::Gamepad_LeftShoulder);
+    ZoomOut.Modifiers.Add(NewObject<UInputModifierNegate>(RuntimeContext));
+    RuntimeContext->MapKey(CameraZoomAction, EKeys::Gamepad_RightShoulder);
 
 }
 
@@ -132,6 +137,7 @@ void AOpenDrivePlayerController::SetupInputComponent()
     Enhanced->BindAction(MouseLookPitchAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyMouseLookPitch);
     Enhanced->BindAction(GamepadLookYawAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyGamepadLookYaw);
     Enhanced->BindAction(GamepadLookPitchAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyGamepadLookPitch);
+    Enhanced->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyCameraZoom);
 }
 
 void AOpenDrivePlayerController::ApplyThrottle(const FInputActionValue& Value)
@@ -237,5 +243,13 @@ void AOpenDrivePlayerController::ApplyGamepadLookPitch(const FInputActionValue& 
     if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
     {
         Vehicle->AdjustCameraPitch(Value.Get<float>() * 2.0f);
+    }
+}
+
+void AOpenDrivePlayerController::ApplyCameraZoom(const FInputActionValue& Value)
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->AdjustCameraZoom(Value.Get<float>() * 75.0f);
     }
 }

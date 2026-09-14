@@ -36,6 +36,7 @@ private:
     void ApplyMouseLookPitch(const FInputActionValue& Value);
     void ApplyGamepadLookYaw(const FInputActionValue& Value);
     void ApplyGamepadLookPitch(const FInputActionValue& Value);
+    void ApplyCameraZoom(const FInputActionValue& Value);
 
     UPROPERTY(Transient) TObjectPtr<UInputMappingContext> RuntimeContext;
     UPROPERTY(Transient) TObjectPtr<UInputAction> ThrottleAction;
@@ -49,6 +50,7 @@ private:
     UPROPERTY(Transient) TObjectPtr<UInputAction> MouseLookPitchAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> GamepadLookYawAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> GamepadLookPitchAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> CameraZoomAction;
 
     bool bMouseLookHeld = false;
 };
