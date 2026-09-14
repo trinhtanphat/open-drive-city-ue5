@@ -19,6 +19,13 @@ class WindowsPowerShellCiTests(unittest.TestCase):
             "tools/run_unreal_smoke.ps1",
         ]:
             self.assertIn(token, workflow)
+    def test_ci_actions_use_node24_ready_v7_majors(self):
+        workflow = (ROOT / ".github/workflows/verify.yml").read_text(encoding="utf-8")
+        self.assertIn("actions/checkout@v7", workflow)
+        self.assertIn("actions/setup-python@v7", workflow)
+        self.assertNotIn("actions/checkout@v4", workflow)
+        self.assertNotIn("actions/setup-python@v5", workflow)
+
     def test_windows_gate_checks_fail_closed_exit_two(self):
         workflow = (ROOT / ".github/workflows/verify.yml").read_text(encoding="utf-8")
         for token in [
