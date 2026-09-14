@@ -39,6 +39,7 @@ REQUIRED_PATHS = [
     "tests/test_camera_orbit_input.py",
     "tests/test_camera_zoom_input.py",
     "tests/test_anti_stuck_input.py",
+    "tests/test_cancel_safe_driving_input.py",
     "tools/build_unreal.ps1",
     "tools/run_unreal_smoke.ps1",
     "tests/test_unreal_build_smoke_scripts.py",

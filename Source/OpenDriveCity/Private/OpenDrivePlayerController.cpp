@@ -135,13 +135,17 @@ void AOpenDrivePlayerController::SetupInputComponent()
     }
 
     Enhanced->BindAction(ThrottleAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyThrottle);
-    Enhanced->BindAction(ThrottleAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ApplyThrottle);
+    Enhanced->BindAction(ThrottleAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ReleaseThrottle);
+    Enhanced->BindAction(ThrottleAction, ETriggerEvent::Canceled, this, &AOpenDrivePlayerController::ReleaseThrottle);
     Enhanced->BindAction(BrakeAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyBrake);
-    Enhanced->BindAction(BrakeAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ApplyBrake);
+    Enhanced->BindAction(BrakeAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ReleaseBrake);
+    Enhanced->BindAction(BrakeAction, ETriggerEvent::Canceled, this, &AOpenDrivePlayerController::ReleaseBrake);
     Enhanced->BindAction(SteeringAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplySteering);
-    Enhanced->BindAction(SteeringAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ApplySteering);
+    Enhanced->BindAction(SteeringAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ReleaseSteering);
+    Enhanced->BindAction(SteeringAction, ETriggerEvent::Canceled, this, &AOpenDrivePlayerController::ReleaseSteering);
     Enhanced->BindAction(HandbrakeAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::ApplyHandbrake);
     Enhanced->BindAction(HandbrakeAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ReleaseHandbrake);
+    Enhanced->BindAction(HandbrakeAction, ETriggerEvent::Canceled, this, &AOpenDrivePlayerController::ReleaseHandbrake);
     Enhanced->BindAction(ResetCameraAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::ResetCamera);
     Enhanced->BindAction(RecoverVehicleAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::RecoverVehicle);
     Enhanced->BindAction(MouseLookHoldAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::BeginMouseLook);
@@ -162,6 +166,14 @@ void AOpenDrivePlayerController::ApplyThrottle(const FInputActionValue& Value)
     }
 }
 
+void AOpenDrivePlayerController::ReleaseThrottle(const FInputActionValue& Value)
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->GetDriverController()->SetThrottle(0.0f);
+    }
+}
+
 void AOpenDrivePlayerController::ApplyBrake(const FInputActionValue& Value)
 {
     if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
@@ -170,11 +182,27 @@ void AOpenDrivePlayerController::ApplyBrake(const FInputActionValue& Value)
     }
 }
 
+void AOpenDrivePlayerController::ReleaseBrake(const FInputActionValue& Value)
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->GetDriverController()->SetBrake(0.0f);
+    }
+}
+
 void AOpenDrivePlayerController::ApplySteering(const FInputActionValue& Value)
 {
     if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
     {
         Vehicle->GetDriverController()->SetSteering(Value.Get<float>());
+    }
+}
+
+void AOpenDrivePlayerController::ReleaseSteering(const FInputActionValue& Value)
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->GetDriverController()->SetSteering(0.0f);
     }
 }
 

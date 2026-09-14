@@ -55,6 +55,7 @@ Keyboard driving uses **WASD** or the matching arrow keys.
 - Gamepad triggers: throttle/brake.
 - Camera reset action: restore the chase camera behind the vehicle.
 - Safety: losing possession resets driving input and mouse-look state to prevent stuck controls.
+- Enhanced Input `Canceled` events also release axis/handbrake state to prevent stuck driving input.
 
 ## Graphics tiers
 

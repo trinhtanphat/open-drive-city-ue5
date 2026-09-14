@@ -25,8 +25,11 @@ private:
     void BuildRuntimeInputMap();
     void RegisterRuntimeInputMap();
     void ApplyThrottle(const FInputActionValue& Value);
+    void ReleaseThrottle(const FInputActionValue& Value);
     void ApplyBrake(const FInputActionValue& Value);
+    void ReleaseBrake(const FInputActionValue& Value);
     void ApplySteering(const FInputActionValue& Value);
+    void ReleaseSteering(const FInputActionValue& Value);
     void ApplyHandbrake(const FInputActionValue& Value);
     void ReleaseHandbrake(const FInputActionValue& Value);
     void ResetCamera(const FInputActionValue& Value);
