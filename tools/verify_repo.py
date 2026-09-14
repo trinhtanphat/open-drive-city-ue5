@@ -18,6 +18,7 @@ REQUIRED_PATHS = [
     "Source/OpenDriveCity/OpenDriveCity.Build.cs",
     "Source/OpenDriveCity/OpenDriveCity.cpp",
     "Source/OpenDriveCity/Public/OpenDriveDriverIntent.h",
+    "Source/OpenDriveCity/Public/OpenDriveVehicleTelemetry.h",
     "Source/OpenDriveCity/Public/OpenDriveVehicleControllerComponent.h",
     "Source/OpenDriveCity/Private/OpenDriveVehicleControllerComponent.cpp",
     "Source/OpenDriveCity/Public/OpenDriveVehiclePawn.h",
@@ -34,6 +35,7 @@ REQUIRED_PATHS = [
     "tests/test_input_lifecycle.py",
     "tools/check_workstation.ps1",
     "tests/test_workstation_preflight_contract.py",
+    "tests/test_vehicle_recovery_telemetry.py",
 ]
 
 FORBIDDEN_DIRS = {"Binaries", "DerivedDataCache", "Intermediate", "Saved"}

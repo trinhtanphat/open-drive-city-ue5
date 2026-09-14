@@ -29,6 +29,7 @@ private:
     void ApplyHandbrake(const FInputActionValue& Value);
     void ReleaseHandbrake(const FInputActionValue& Value);
     void ResetCamera(const FInputActionValue& Value);
+    void RecoverVehicle(const FInputActionValue& Value);
 
     UPROPERTY(Transient) TObjectPtr<UInputMappingContext> RuntimeContext;
     UPROPERTY(Transient) TObjectPtr<UInputAction> ThrottleAction;
@@ -36,4 +37,5 @@ private:
     UPROPERTY(Transient) TObjectPtr<UInputAction> SteeringAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> HandbrakeAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> ResetCameraAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> RecoverVehicleAction;
 };

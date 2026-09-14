@@ -50,6 +50,7 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
     SteeringAction = NewAxisAction(TEXT("Steering"));
     HandbrakeAction = NewBoolAction(TEXT("Handbrake"));
     ResetCameraAction = NewBoolAction(TEXT("ResetCamera"));
+    RecoverVehicleAction = NewBoolAction(TEXT("RecoverVehicle"));
 
     RuntimeContext->MapKey(ThrottleAction, EKeys::W);
     RuntimeContext->MapKey(ThrottleAction, EKeys::Up);
@@ -70,6 +71,8 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
     RuntimeContext->MapKey(HandbrakeAction, EKeys::Gamepad_FaceButton_Left);
     RuntimeContext->MapKey(ResetCameraAction, EKeys::R);
     RuntimeContext->MapKey(ResetCameraAction, EKeys::Gamepad_RightThumbstick);
+    RuntimeContext->MapKey(RecoverVehicleAction, EKeys::BackSpace);
+    RuntimeContext->MapKey(RecoverVehicleAction, EKeys::Gamepad_Special_Right);
 
 }
 
@@ -111,6 +114,7 @@ void AOpenDrivePlayerController::SetupInputComponent()
     Enhanced->BindAction(HandbrakeAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::ApplyHandbrake);
     Enhanced->BindAction(HandbrakeAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ReleaseHandbrake);
     Enhanced->BindAction(ResetCameraAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::ResetCamera);
+    Enhanced->BindAction(RecoverVehicleAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::RecoverVehicle);
 }
 
 void AOpenDrivePlayerController::ApplyThrottle(const FInputActionValue& Value)
@@ -158,5 +162,13 @@ void AOpenDrivePlayerController::ResetCamera(const FInputActionValue& Value)
     if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
     {
         Vehicle->ResetChaseCamera();
+    }
+}
+
+void AOpenDrivePlayerController::RecoverVehicle(const FInputActionValue& Value)
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->RecoverVehicle();
     }
 }

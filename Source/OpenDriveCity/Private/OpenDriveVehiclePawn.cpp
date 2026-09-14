@@ -1,6 +1,7 @@
 #include "OpenDriveVehiclePawn.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "OpenDriveVehicleControllerComponent.h"
@@ -49,6 +50,39 @@ void AOpenDriveVehiclePawn::ResetChaseCamera()
     }
 }
 
+void AOpenDriveVehiclePawn::RecoverVehicle()
+{
+    const float Yaw = GetActorRotation().Yaw;
+    const FVector LiftedLocation = GetActorLocation() + FVector(0.0f, 0.0f, 100.0f);
+    SetActorLocationAndRotation(
+        LiftedLocation, FRotator(0.0f, Yaw, 0.0f), false, nullptr, ETeleportType::TeleportPhysics);
+
+    if (USkeletalMeshComponent* VehicleMesh = GetMesh())
+    {
+        VehicleMesh->SetPhysicsLinearVelocity(FVector::ZeroVector);
+        VehicleMesh->SetPhysicsAngularVelocityInDegrees(FVector::ZeroVector);
+    }
+
+    if (UChaosWheeledVehicleMovementComponent* Movement =
+        Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement()))
+    {
+        Movement->SetThrottleInput(0.0f);
+        Movement->SetBrakeInput(0.0f);
+        Movement->SetSteeringInput(0.0f);
+        Movement->SetHandbrakeInput(false);
+    }
+
+    if (DriverController)
+    {
+        DriverController->SetThrottle(0.0f);
+        DriverController->SetBrake(0.0f);
+        DriverController->SetSteering(0.0f);
+        DriverController->SetHandbrake(false);
+    }
+
+    ResetChaseCamera();
+}
+
 float AOpenDriveVehiclePawn::GetSpeedKph() const
 {
     return GetVelocity().Size() * 0.036f;
@@ -58,4 +92,14 @@ int32 AOpenDriveVehiclePawn::GetCurrentGear() const
 {
     const UChaosWheeledVehicleMovementComponent* Movement = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovement());
     return Movement ? Movement->GetCurrentGear() : 0;
+}
+
+FOpenDriveVehicleTelemetry AOpenDriveVehiclePawn::GetTelemetry() const
+{
+    FOpenDriveVehicleTelemetry Telemetry;
+    Telemetry.SpeedKph = GetSpeedKph();
+    Telemetry.CurrentGear = GetCurrentGear();
+    Telemetry.bMoving = Telemetry.SpeedKph > 0.5f;
+    Telemetry.bHandbrake = DriverController ? DriverController->GetIntent().bHandbrake : false;
+    return Telemetry;
 }
