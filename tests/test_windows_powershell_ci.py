@@ -25,6 +25,7 @@ class WindowsPowerShellCiTests(unittest.TestCase):
             "pwsh -NoProfile -File .\\tools\\build_unreal.ps1",
             "pwsh -NoProfile -File .\\tools\\run_unreal_smoke.ps1",
             "$LASTEXITCODE -ne 2",
+            "exit 0",
         ]:
             self.assertIn(token, workflow)
 

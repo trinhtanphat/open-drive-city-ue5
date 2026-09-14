@@ -56,3 +56,4 @@ jobs:
           if ($LASTEXITCODE -ne 2) {
             throw "run_unreal_smoke.ps1 expected exit 2, got $LASTEXITCODE"
           }
+          exit 0
