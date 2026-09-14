@@ -24,3 +24,8 @@ void UOpenDriveVehicleControllerComponent::SetHandbrake(bool bEnabled)
 {
     Intent.bHandbrake = bEnabled;
 }
+
+void UOpenDriveVehicleControllerComponent::ResetIntent()
+{
+    Intent = FOpenDriveDriverIntent{};
+}

@@ -18,6 +18,7 @@ public:
 
 protected:
     virtual void BeginPlay() override;
+    virtual void OnUnPossess() override;
     virtual void SetupInputComponent() override;
 
 private:

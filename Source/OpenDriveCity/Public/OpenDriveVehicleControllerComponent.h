@@ -25,6 +25,9 @@ public:
     UFUNCTION(BlueprintCallable)
     void SetHandbrake(bool bEnabled);
 
+    UFUNCTION(BlueprintCallable)
+    void ResetIntent();
+
     UFUNCTION(BlueprintPure)
     FOpenDriveDriverIntent GetIntent() const { return Intent; }
 

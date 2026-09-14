@@ -24,6 +24,20 @@ void AOpenDrivePlayerController::BeginPlay()
     RegisterRuntimeInputMap();
 }
 
+void AOpenDrivePlayerController::OnUnPossess()
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        if (UOpenDriveVehicleControllerComponent* DriverController = Vehicle->GetDriverController())
+        {
+            DriverController->ResetIntent();
+        }
+    }
+
+    bMouseLookHeld = false;
+    Super::OnUnPossess();
+}
+
 void AOpenDrivePlayerController::BuildRuntimeInputMap()
 {
     if (RuntimeContext)
