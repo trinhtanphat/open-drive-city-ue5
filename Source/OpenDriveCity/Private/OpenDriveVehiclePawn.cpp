@@ -50,6 +50,30 @@ void AOpenDriveVehiclePawn::ResetChaseCamera()
     }
 }
 
+void AOpenDriveVehiclePawn::AdjustCameraYaw(float DeltaDegrees)
+{
+    if (!CameraBoom)
+    {
+        return;
+    }
+
+    FRotator Rotation = CameraBoom->GetRelativeRotation();
+    Rotation.Yaw = FRotator::NormalizeAxis(Rotation.Yaw + DeltaDegrees);
+    CameraBoom->SetRelativeRotation(Rotation);
+}
+
+void AOpenDriveVehiclePawn::AdjustCameraPitch(float DeltaDegrees)
+{
+    if (!CameraBoom)
+    {
+        return;
+    }
+
+    FRotator Rotation = CameraBoom->GetRelativeRotation();
+    Rotation.Pitch = FMath::Clamp(Rotation.Pitch + DeltaDegrees, -70.0f, 25.0f);
+    CameraBoom->SetRelativeRotation(Rotation);
+}
+
 void AOpenDriveVehiclePawn::RecoverVehicle()
 {
     const float Yaw = GetActorRotation().Yaw;

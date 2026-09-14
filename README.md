@@ -46,6 +46,9 @@ Keyboard driving uses **WASD** or the matching arrow keys.
 - `A` / Left Arrow and `D` / Right Arrow: steering.
 - `Space`: handbrake.
 - `Backspace`: recover vehicle upright and clear driving input.
+- Hold **Right Mouse Button** and move the mouse: orbit the chase camera.
+- Gamepad **right stick**: orbit the chase camera without a mouse-look hold.
+- `R`: reset the chase camera behind the vehicle.
 - Gamepad left stick: steering.
 - Gamepad triggers: throttle/brake.
 - Camera reset action: restore the chase camera behind the vehicle.

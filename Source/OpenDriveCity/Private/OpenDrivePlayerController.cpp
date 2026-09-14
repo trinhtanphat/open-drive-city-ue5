@@ -51,6 +51,11 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
     HandbrakeAction = NewBoolAction(TEXT("Handbrake"));
     ResetCameraAction = NewBoolAction(TEXT("ResetCamera"));
     RecoverVehicleAction = NewBoolAction(TEXT("RecoverVehicle"));
+    MouseLookHoldAction = NewBoolAction(TEXT("MouseLookHold"));
+    MouseLookYawAction = NewAxisAction(TEXT("MouseLookYaw"));
+    MouseLookPitchAction = NewAxisAction(TEXT("MouseLookPitch"));
+    GamepadLookYawAction = NewAxisAction(TEXT("GamepadLookYaw"));
+    GamepadLookPitchAction = NewAxisAction(TEXT("GamepadLookPitch"));
 
     RuntimeContext->MapKey(ThrottleAction, EKeys::W);
     RuntimeContext->MapKey(ThrottleAction, EKeys::Up);
@@ -73,6 +78,11 @@ void AOpenDrivePlayerController::BuildRuntimeInputMap()
     RuntimeContext->MapKey(ResetCameraAction, EKeys::Gamepad_RightThumbstick);
     RuntimeContext->MapKey(RecoverVehicleAction, EKeys::BackSpace);
     RuntimeContext->MapKey(RecoverVehicleAction, EKeys::Gamepad_Special_Right);
+    RuntimeContext->MapKey(MouseLookHoldAction, EKeys::RightMouseButton);
+    RuntimeContext->MapKey(MouseLookYawAction, EKeys::MouseX);
+    RuntimeContext->MapKey(MouseLookPitchAction, EKeys::MouseY);
+    RuntimeContext->MapKey(GamepadLookYawAction, EKeys::Gamepad_RightX);
+    RuntimeContext->MapKey(GamepadLookPitchAction, EKeys::Gamepad_RightY);
 
 }
 
@@ -115,6 +125,13 @@ void AOpenDrivePlayerController::SetupInputComponent()
     Enhanced->BindAction(HandbrakeAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::ReleaseHandbrake);
     Enhanced->BindAction(ResetCameraAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::ResetCamera);
     Enhanced->BindAction(RecoverVehicleAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::RecoverVehicle);
+    Enhanced->BindAction(MouseLookHoldAction, ETriggerEvent::Started, this, &AOpenDrivePlayerController::BeginMouseLook);
+    Enhanced->BindAction(MouseLookHoldAction, ETriggerEvent::Completed, this, &AOpenDrivePlayerController::EndMouseLook);
+    Enhanced->BindAction(MouseLookHoldAction, ETriggerEvent::Canceled, this, &AOpenDrivePlayerController::EndMouseLook);
+    Enhanced->BindAction(MouseLookYawAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyMouseLookYaw);
+    Enhanced->BindAction(MouseLookPitchAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyMouseLookPitch);
+    Enhanced->BindAction(GamepadLookYawAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyGamepadLookYaw);
+    Enhanced->BindAction(GamepadLookPitchAction, ETriggerEvent::Triggered, this, &AOpenDrivePlayerController::ApplyGamepadLookPitch);
 }
 
 void AOpenDrivePlayerController::ApplyThrottle(const FInputActionValue& Value)
@@ -170,5 +187,55 @@ void AOpenDrivePlayerController::RecoverVehicle(const FInputActionValue& Value)
     if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
     {
         Vehicle->RecoverVehicle();
+    }
+}
+
+void AOpenDrivePlayerController::BeginMouseLook(const FInputActionValue& Value)
+{
+    bMouseLookHeld = Value.Get<bool>();
+}
+
+void AOpenDrivePlayerController::EndMouseLook(const FInputActionValue& Value)
+{
+    bMouseLookHeld = false;
+}
+
+void AOpenDrivePlayerController::ApplyMouseLookYaw(const FInputActionValue& Value)
+{
+    if (!bMouseLookHeld)
+    {
+        return;
+    }
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->AdjustCameraYaw(Value.Get<float>() * 0.15f);
+    }
+}
+
+void AOpenDrivePlayerController::ApplyMouseLookPitch(const FInputActionValue& Value)
+{
+    if (!bMouseLookHeld)
+    {
+        return;
+    }
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->AdjustCameraPitch(-Value.Get<float>() * 0.15f);
+    }
+}
+
+void AOpenDrivePlayerController::ApplyGamepadLookYaw(const FInputActionValue& Value)
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->AdjustCameraYaw(Value.Get<float>() * 2.0f);
+    }
+}
+
+void AOpenDrivePlayerController::ApplyGamepadLookPitch(const FInputActionValue& Value)
+{
+    if (AOpenDriveVehiclePawn* Vehicle = Cast<AOpenDriveVehiclePawn>(GetPawn()))
+    {
+        Vehicle->AdjustCameraPitch(Value.Get<float>() * 2.0f);
     }
 }

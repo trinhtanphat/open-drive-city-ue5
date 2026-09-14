@@ -22,6 +22,12 @@ public:
     UFUNCTION(BlueprintCallable, Category="OpenDrive|Camera")
     void ResetChaseCamera();
 
+    UFUNCTION(BlueprintCallable, Category="OpenDrive|Camera")
+    void AdjustCameraYaw(float DeltaDegrees);
+
+    UFUNCTION(BlueprintCallable, Category="OpenDrive|Camera")
+    void AdjustCameraPitch(float DeltaDegrees);
+
     UFUNCTION(BlueprintCallable, Category="OpenDrive|Vehicle")
     void RecoverVehicle();
 

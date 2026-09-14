@@ -30,6 +30,12 @@ private:
     void ReleaseHandbrake(const FInputActionValue& Value);
     void ResetCamera(const FInputActionValue& Value);
     void RecoverVehicle(const FInputActionValue& Value);
+    void BeginMouseLook(const FInputActionValue& Value);
+    void EndMouseLook(const FInputActionValue& Value);
+    void ApplyMouseLookYaw(const FInputActionValue& Value);
+    void ApplyMouseLookPitch(const FInputActionValue& Value);
+    void ApplyGamepadLookYaw(const FInputActionValue& Value);
+    void ApplyGamepadLookPitch(const FInputActionValue& Value);
 
     UPROPERTY(Transient) TObjectPtr<UInputMappingContext> RuntimeContext;
     UPROPERTY(Transient) TObjectPtr<UInputAction> ThrottleAction;
@@ -38,4 +44,11 @@ private:
     UPROPERTY(Transient) TObjectPtr<UInputAction> HandbrakeAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> ResetCameraAction;
     UPROPERTY(Transient) TObjectPtr<UInputAction> RecoverVehicleAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> MouseLookHoldAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> MouseLookYawAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> MouseLookPitchAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> GamepadLookYawAction;
+    UPROPERTY(Transient) TObjectPtr<UInputAction> GamepadLookPitchAction;
+
+    bool bMouseLookHeld = false;
 };

@@ -36,6 +36,7 @@ REQUIRED_PATHS = [
     "tools/check_workstation.ps1",
     "tests/test_workstation_preflight_contract.py",
     "tests/test_vehicle_recovery_telemetry.py",
+    "tests/test_camera_orbit_input.py",
 ]
 
 FORBIDDEN_DIRS = {"Binaries", "DerivedDataCache", "Intermediate", "Saved"}
